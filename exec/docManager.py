@@ -98,6 +98,3 @@ def is_finished(name):
 	source = Path.cwd().parents[0]/"docs"/name
 	destination = Path.cwd().parents[0]/"results"/name/name
 	shutil.move(source,destination)
-
-
-write_name()
