@@ -1,3 +1,4 @@
 # workflow1.0
 
-1. Run exec/workflow.py
+1. Save files in docs
+2. Run exec/workflow.py
