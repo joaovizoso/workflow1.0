@@ -4,30 +4,33 @@ import tesserocr as tr
 from PIL import Image
 from pathlib import Path
 import folderManager
+import json
 
 #coords = [x,y,w,h]
 
 def define_regions(image):
 
 	regions = []
-	cv_img = cv2.imread(image)
-	pil_img = Image.fromarray(cv_img)
-	api = tr.PyTessBaseAPI()
-
-	try:
-		api.SetImage(pil_img)
+	
+	img = Image.open(image)
+	
+	with tr.PyTessBaseAPI() as api:
+		api.SetImage(img)
 		boxes = api.GetComponentImages(tr.RIL.TEXTLINE,True)
 		i = 1
 		for (_,box,_,_) in boxes:
+
 			x,y,w,h = box['x'],box['y'],box['w'],box['h']
 			region = {}
-			region['id'] = i
-			region['text'] = []
+			region['id'] = "line_1_" + str(i)
+			region['bbox'] = [x,y,x+w,y+h]
 			region['coords'] = [x,y,w,h]
+			region['filename'] = ""
+			region['text'] = []
+			region['word_conf'] = [] 
+			region['hocr_path'] = ""
 			i+=1
 			regions.append(region)
-	finally:
-		api.End()
 
 	return regions
 
@@ -37,41 +40,45 @@ def get_coords(regions):
 	coords=[]
 	for i in range(len(regions)):
 		coords.append(regions[i]['coords'])
-	return coords
+	return coords	
 
 
 def crop(coords,image):
 
 	img = cv2.imread(image)
-	x = int(coords[0])
-	y = int(coords[1])
-	w = int(coords[2])
-	h = int(coords[3])
+	x,y,w,h= int(coords[0]), int(coords[1]), int(coords[2]), int(coords[3]) 
 	crop_img = img[y:y+h,x:x+w].copy()
+	crop_img = cv2.copyMakeBorder(crop_img,50,50,50,50,cv2.BORDER_CONSTANT,value=[255,255,255])
 
 	return crop_img
 
 
 def save(name):
-	folderManager.create_REG_TMP(name)
-	path = Path.cwd()/"tmp"/name/"pages"
-	destination = str(Path.cwd()/"tmp"/name/"regions")
-	i=1 
-	
+	path = Path.cwd()/"tmp"/name/"regions"
+	path2 = Path.cwd()/"tmp"/name/"pages"
+	blocks = []
+
 	for image in path.glob("*.tiff"):
 
 		regions = define_regions(str(image))
-		coords = get_coords(regions)
-		
+		block = {}
+		block['image'] = str(image.parts[-1])
+		block['regions'] = regions
+		blocks.append(block)
 
-		for region in range(len(coords)):
-			result = crop(coords[region],str(image))
-			cv2.imwrite(destination+'/%s_%s.tiff'%(i,region),result)
+		for region in regions:
+			filename = path/str(image.stem + '_%s.tiff'%(regions.index(region)+1))
+			region['filename'] = str(filename)
+			region['hocr_path'] = str(path2/image.stem) + '.hocr'
+			result = crop(region['coords'],str(image))
+			cv2.imwrite(str(filename),result)
 
-		i+=1
+		image.unlink()
 
-	print("Done")
+	with open(path/'regions.JSON','w') as file:
+		json.dump(blocks,file)
+	
+	return blocks
 
 
-print(define_regions("44_82.tiff"))
-
+save("tessinput.tiff")

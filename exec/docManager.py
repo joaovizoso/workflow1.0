@@ -77,13 +77,13 @@ def delete_data(name):
 
 
 def update_data(data):
-	path = str(Path.cwd()/"tmp"/"docs.JSON")
+	path = str(Path.cwd()/"tmp"/"state.JSON")
 	with open(path,'w') as file:
 		json.dump(data,file)
 
 
 def get_data():
-	path = Path.cwd()/"tmp"/"docs.JSON"
+	path = Path.cwd()/"tmp"/"state.JSON"
 	with path.open() as file:
 		data = json.load(file)
 		return data
@@ -92,6 +92,11 @@ def get_data():
 def delete_page(name,page):
 	path = Path.cwd()/"tmp"/name/"pages"/"page_%s.tiff"%page
 	path.unlink()
+
+def delete_regions(name):
+	path = Path.cwd()/"tmp"/name/"regions"
+	for elem in path.glob("*.tiff"):
+		elem.unlink()
 
 
 def is_finished(name):

@@ -18,7 +18,7 @@ def to_do(doc):
 	#if (doc['m']):
 		#merge(n)
 	
-	docManager.delete_data(n)
+	#docManager.delete_data(n)
 
 
 def main():
