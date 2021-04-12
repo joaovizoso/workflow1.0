@@ -42,5 +42,4 @@ def update_field(name,image,field,value):
 				data[in1]['regions'][in2][field] = value
 
 	update_data(name,data)
-
-ocr("tessinput.tiff")
+	docManager.update_field(name,'ocr',0)

@@ -16,6 +16,7 @@
 
 # Create a searchable PDF from a pile of HOCR + JPEG. Tested with
 # Tesseract.
+
 import folderManager
 import docManager
 import base64
@@ -158,7 +159,7 @@ def merge(name):
 
     export_pdf(path,200,str(path2))
 
+    docManager.update_field(name,'merge',0)
     docManager.is_finished(name)
 
 
-merge("tessinput.tiff")

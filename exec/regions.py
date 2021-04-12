@@ -4,6 +4,7 @@ import tesserocr as tr
 from PIL import Image
 from pathlib import Path
 import folderManager
+import docManager
 import json
 
 #coords = [x,y,w,h]
@@ -77,8 +78,9 @@ def save(name):
 
 	with open(path/'regions.JSON','w') as file:
 		json.dump(blocks,file)
+
+	docManager.update_field(name,'segment',0)
 	
 	return blocks
 
 
-save("tessinput.tiff")

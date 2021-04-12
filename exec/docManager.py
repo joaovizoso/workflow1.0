@@ -41,8 +41,10 @@ def add_doc(path):
 	doc={}
 	doc['name'] = path.parts[-1]
 	doc['split'] = pages_left
+	doc['preprocess'] = 1
 	doc['segment'] = 1
-	doc['ocr'] = pages_left
+	doc['ocr'] = 1
+	doc['compare'] = 1
 	doc['merge'] = 1
 	docs.append(doc)
 
@@ -77,13 +79,13 @@ def delete_data(name):
 
 
 def update_data(data):
-	path = str(Path.cwd()/"tmp"/"state.JSON")
+	path = str(Path.cwd()/"tmp"/"docs.JSON")
 	with open(path,'w') as file:
 		json.dump(data,file)
 
 
 def get_data():
-	path = Path.cwd()/"tmp"/"state.JSON"
+	path = Path.cwd()/"tmp"/"docs.JSON"
 	with path.open() as file:
 		data = json.load(file)
 		return data

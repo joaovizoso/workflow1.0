@@ -2,7 +2,11 @@
 
 import split
 import docManager
-
+import preprocess
+import regions
+import ocr
+import compare
+import merge
 
 def to_do(doc):	
 	n = doc['name']
@@ -12,13 +16,33 @@ def to_do(doc):
 		split.split_pages(n)	
 		print("%s splitted"%n)
 
-	#if (doc['o']):
-		#recognize(n)
+	if (doc['preprocess']):
+		print("Preprocessing %s"%n)
+		preprocess.pre_process(n)
+		print("%s preprocessed"%n)
+
+	if (doc['segment']):
+		print("Segmenting %s"%n)
+		regions.save(n)
+		print("%s segmented"%n)
 	
-	#if (doc['m']):
-		#merge(n)
+	if (doc['ocr']):
+		print("OCR %s"%n)
+		ocr.ocr(n)
+		print("%s OCR done"%n)
+
+	if (doc['compare']):
+		print("Comparing results of %s"%n)
+		compare.modify(n) 
+		print("%s results compared"%n)
+
+	if (doc['merge']):
+		print("Comparing results of %s"%n)
+		merge.merge(n)
+		print("%s results compared"%n)
+		
 	
-	#docManager.delete_data(n)
+	docManager.delete_data(n)
 
 
 def main():

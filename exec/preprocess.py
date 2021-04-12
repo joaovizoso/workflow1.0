@@ -3,6 +3,7 @@ from tesserocr import PyTessBaseAPI, RIL
 from PIL import Image
 from pathlib import Path
 import folderManager
+import docManager
 
 # Produces hocr file 
 # Produces input image 
@@ -38,5 +39,5 @@ def pre_process(name):
 		with open(str(filename),"w") as f:  
 			f.write(str(hocr_file))
 
+		docManager.update_field(name,'preprocess',0)
 
-pre_process("tessinput.tiff")
